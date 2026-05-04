@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "author": "Uri Shaked",
+  "author": "AquaControl SI",
   "editor": "wokwi",
-  "parts": [ { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} } ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
+  "parts": [
+    { "type": "board-esp32-devkit-v1", "id": "esp32", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-ds18b20", "id": "temp1", "top": -120, "left": 150, "attrs": {} },
+    { "type": "wokwi-hc-sr04", "id": "ultra1", "top": -150, "left": -120, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo1", "top": 180, "left": 150, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp32:GND.1", "temp1:GND", "black", [ "v0" ] ],
+    [ "esp32:3V3", "temp1:VCC", "red", [ "v0" ] ],
+    [ "esp32:D4", "temp1:DQ", "blue", [ "v0" ] ],
+    [ "esp32:GND.1", "ultra1:GND", "black", [ "v0" ] ],
+    [ "esp32:VIN", "ultra1:VCC", "red", [ "v0" ] ],
+    [ "esp32:D5", "ultra1:TRIG", "green", [ "v0" ] ],
+    [ "esp32:D18", "ultra1:ECHO", "yellow", [ "v0" ] ],
+    [ "esp32:GND.1", "servo1:GND", "black", [ "v0" ] ],
+    [ "esp32:VIN", "servo1:VCC", "red", [ "v0" ] ],
+    [ "esp32:D13", "servo1:PWM", "orange", [ "v0" ] ]
+  ]
 }
