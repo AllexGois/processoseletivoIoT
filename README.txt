@@ -53,6 +53,129 @@ processoseletivoIoT/
 
 ---
 
+## 🧩 Arquitetura Modular
+
+O **AquaControl SI** foi desenvolvido com uma arquitetura **altamente modular**, permitindo fácil manutenção, testes e expansão do sistema.
+
+### **Módulos Independentes**
+
+#### **🔧 `config.py` - Central de Configuração**
+```python
+# Todas as constantes em um local
+PIN_TEMP = 4      # DS18B20
+PIN_TRIG = 5      # HC-SR04 Trigger
+PIN_ECHO = 18     # HC-SR04 Echo
+PIN_SERVO = 13    # Servo PWM
+
+ALTURA_TANQUE = 50.0  # cm
+RAIO_TANQUE = 25.0    # cm
+```
+**Vantagens**: Mudanças de hardware exigem apenas editar este arquivo.
+
+#### **📡 `perifericos.py` - Camada de Hardware**
+```python
+def ler_dados():
+    # Temperatura DS18B20
+    # Distância HC-SR04
+    # Cálculo de volume
+    return temp, volume
+
+def acionar_alimentador(segundos):
+    # Controle do servo
+```
+**Vantagens**: Isolamento completo do hardware, fácil para testes unitários.
+
+#### **🌐 `internet.py` - Conectividade**
+```python
+def conectar_wifi():
+    # Configuração WiFi
+    # Tentativas automáticas
+    # Status de conexão
+```
+**Vantagens**: Lógica de rede separada, pode ser substituída por Ethernet/GSM.
+
+#### **📨 `comunicacao.py` - Protocolo IoT**
+```python
+def conectar_mqtt():
+    # Broker MQTT
+    # Tópicos de publicação
+    # Callbacks de mensagens
+```
+**Vantagens**: Protocolo independente, pode migrar para HTTP/CoAP facilmente.
+
+#### **🎯 `main.py` - Orquestrador**
+```python
+# Importa todos os módulos
+# Controla o fluxo principal
+# Tratamento de erros
+# Loop de monitoramento
+```
+**Vantagens**: Lógica de negócio centralizada, fácil de entender o fluxo.
+
+---
+
+## 🔄 Integração dos Módulos
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  main.py    │───▶│ perifericos │───▶│   config    │
+│ Orquestrador│    │  (Hardware) │    │(Constantes)│
+└─────────────┘    └─────────────┘    └─────────────┘
+       │                    │                    │
+       ▼                    ▼                    ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  internet   │◀──▶│ comunicacao │    │   dados     │
+│   (WiFi)    │    │   (MQTT)    │    │ (Sensor)    │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### **Fluxo de Dados:**
+1. **main.py** chama `perifericos.ler_dados()`
+2. **perifericos** usa configurações do **config**
+3. Dados vão para **comunicacao** via MQTT
+4. **internet** mantém conectividade WiFi
+
+---
+
+## 🧪 Benefícios da Modularidade
+
+### **Manutenibilidade**
+- ✅ **Mudanças isoladas**: Alterar WiFi não afeta sensores
+- ✅ **Debug facilitado**: Testar módulos individualmente
+- ✅ **Código reutilizável**: Módulos podem ser usados em outros projetos
+
+### **Escalabilidade**
+- ✅ **Novos sensores**: Adicionar em `perifericos.py`
+- ✅ **Novos protocolos**: Extender `comunicacao.py`
+- ✅ **Nova conectividade**: Modificar apenas `internet.py`
+
+### **Testabilidade**
+- ✅ **Testes unitários**: Cada módulo pode ser testado separadamente
+- ✅ **Mocks**: Simular hardware para testes
+- ✅ **CI/CD**: Validar cada módulo independentemente
+
+---
+
+## 📊 Exemplo de Expansão
+
+**Adicionar sensor de pH:**
+```python
+# 1. Adicionar em config.py
+PIN_PH = 34
+
+# 2. Extender perifericos.py
+def ler_ph():
+    # Lógica do sensor pH
+    return ph_value
+
+# 3. Integrar em main.py
+temp, volume, ph = ler_todos_dados()
+```
+
+**Resultado**: Sistema expandido sem modificar código existente!
+
+---
+
 🔧 Como Usar no Wokwi
 
 Configuração Manual
