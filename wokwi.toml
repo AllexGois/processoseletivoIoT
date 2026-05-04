@@ -6,3 +6,4 @@ elf = ""
 
 [env]
 WOKWI_TIMEOUT = 30000
+WOKWI_MAIN_FILE = "src/teste.py"
